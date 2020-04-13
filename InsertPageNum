@@ -1,0 +1,45 @@
+Sub InsertPageNum()
+'
+' 归档文件目录导出IE的安全级别中“对未标记为可安全执行脚本的ActiveX控件初始化并执行脚本”设置为“提示”
+' 归档文件目录导出要用2003版的Word，第一次导出时如果格式有问题，调一下格式，下次导出时就没问题了（可能是要保持word的默认设置）
+'
+    Dim i, j As Integer
+    
+    j = ActiveDocument.BuiltInDocumentProperties(wdPropertyPages)   '当前文件总页数
+    DelPageNum  '删除原本的页码
+    Application.Browser.Target = wdBrowsePage    '使 “Browser” 始终为 “页面”
+    Selection.HomeKey Unit:=wdStory '定位到最前
+
+    For i = 1 To j
+        Selection.MoveDown Unit:=wdLine, Count:=1       '从最前位置
+        Selection.MoveRight Unit:=wdCharacter, Count:=1     '移动到
+        Selection.EndKey Unit:=wdLine               '将要插入
+        Selection.MoveLeft Unit:=wdCharacter, Count:=2      '页码的位置
+        Selection = i   '插入页码
+        Application.Browser.Next    '翻到下一页（面）
+    Next
+End Sub
+
+Sub DelPageNum()
+'
+' 删除原本的页码
+'
+'
+'
+    Selection.Find.ClearFormatting
+    Selection.Find.Replacement.ClearFormatting
+    With Selection.Find
+        .Text = "第 [0-9]{1,} 页"       '使用通配符，将“第 XX 页”
+        .Replacement.Text = "第  页"    '替换为“第  页”
+        .Forward = True     '以下为替换（Ctrl+H）中的一些选项，我也不知道什么意思
+        .Wrap = wdFindContinue
+        .Format = False
+        .MatchCase = False
+        .MatchWholeWord = False
+        .MatchByte = False
+        .MatchAllWordForms = False
+        .MatchSoundsLike = False
+        .MatchWildcards = True
+    End With
+    Selection.Find.Execute Replace:=wdReplaceAll    '执行“全部替换”
+End Sub
