@@ -10,7 +10,7 @@ Sub InsertPageNum()
     Application.Browser.Target = wdBrowsePage    '使 “Browser” 始终为 “页面”
     Selection.HomeKey Unit:=wdStory '定位到最前
 
-    For i = 1 To j
+    For i = 1 To j    '应该也可以用“替换”的方式插入页码，速度会更快，但这样的效果更炫酷[/doge]
         Selection.MoveDown Unit:=wdLine, Count:=1       '从最前位置
         Selection.MoveRight Unit:=wdCharacter, Count:=1     '移动到
         Selection.EndKey Unit:=wdLine               '将要插入
